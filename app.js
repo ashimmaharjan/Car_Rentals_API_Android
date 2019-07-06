@@ -10,6 +10,8 @@ const multer = require('multer');
 
 const User = require('./models/Users');
 const Car = require('./models/Cars');
+const Auth = require('./middleware/auth');
+const jwt = require('jsonwebtoken');
 
 app.use(express.json());
 app.use(cors());
@@ -49,26 +51,40 @@ app.post('/registerUser', (req, res) => {
     })
 })
 
-app.post('/login', function (req, res) {
+app.post('/login', async function (req, res) {
 
-    console.log(req.body);
+    var inputUsername = req.body.username;
+    var inputPassword = req.body.password;
 
-    var uname = req.body.username;
-    var pass = req.body.password;
+    const user = await User.checkCredentialsDb(inputUsername, inputPassword);
+    if (user != null) {
+        const token = await user.generateAuthToken();
+        console.log(token);
+        res.status(201).json({
+            token: token,
+            users: user,
+            message: "Sucess"
+        });
+    }
+    else {
+        res.json({
+            message: "Invalid! Login Denied!!"
+        })
+    }
 
-    User.find({ 'username': uname, 'password': pass }).countDocuments(function (err, number) {
-        if (number != 0) {
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'application/json');
-            res.json('Login successful');
-            console.log("Login Successful.")
-        }
-        else {
-            res.send('Invalid username or password.');
-            console.log('Invalid username or password');
-        }
-    })
 })
+
+app.get('/getUserById/:id', function (req, res) {
+    uid = req.params.id.toString();
+    console.log("Getting User By Id....");
+    console.log(uid);
+    User.findById(uid).then(function (user) {
+        res.json(user);
+        console.log(user);
+    }).catch(function (e) {
+        res.send(e)
+    });
+});
 
 app.post('/addCar', (req, res) => {
     console.log("Inside API");

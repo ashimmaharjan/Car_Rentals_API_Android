@@ -86,6 +86,21 @@ app.get('/getUserById/:id', function (req, res) {
     });
 });
 
+
+app.put('/updateProfile', function (req, res) {
+
+    console.log("Update user profile initiated.")
+    console.log(req.body);
+    var uid = req.body._id;
+    console.log("Updating information of user with id : " + uid);
+    User.findByIdAndUpdate({ _id: uid }, req.body).then(function () {
+        console.log("Profile updated successfully.")
+        res.send();
+    }).catch(function (e) {
+        console.log("There was a error while updating.")
+    })
+});
+
 app.post('/addCar', (req, res) => {
     console.log("Inside API");
     var response = "Nothing";

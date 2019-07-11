@@ -18,6 +18,9 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/images", express.static("./images"));
 
+
+// Code to Register User
+
 app.post('/registerUser', (req, res) => {
     console.log(req.body);
     var ufname = req.body.first_name;
@@ -33,7 +36,6 @@ app.post('/registerUser', (req, res) => {
         'username': username,
         'password': password,
         'phone_number': pnum
-
     });
     User.find({ 'username': username }).countDocuments(function (err, number) {
         if (number != 0) {
@@ -50,7 +52,11 @@ app.post('/registerUser', (req, res) => {
         }
     })
 })
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+
+// Code for Login
 app.post('/login', async function (req, res) {
 
     var inputUsername = req.body.username;
@@ -73,6 +79,11 @@ app.post('/login', async function (req, res) {
     }
 
 })
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+// Code to retrieve data of logged in user
 
 app.get('/getUserById/:id', function (req, res) {
     uid = req.params.id.toString();
@@ -85,7 +96,10 @@ app.get('/getUserById/:id', function (req, res) {
         res.send(e)
     });
 });
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+// Code to update data of user
 
 app.put('/updateProfile', function (req, res) {
 
@@ -100,6 +114,11 @@ app.put('/updateProfile', function (req, res) {
         console.log("There was a error while updating.")
     })
 });
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+// Code to add new car
 
 app.post('/addCar', (req, res) => {
     console.log("Inside API");
@@ -116,6 +135,10 @@ app.post('/addCar', (req, res) => {
         res.send(e);
     })
 })
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// Code to save Image of car in database
 
 var storage = multer.diskStorage({
     destination: "images",
@@ -137,6 +160,9 @@ var upload = multer({ storage: storage, fileFilter: imageFileFilter, limits: { f
 app.post('/uploadImage', upload.single('carImage'), (req, res) => {
     res.json(req.file.filename);
 })
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Code to extract data of cars 
 
 app.get('/getCars', function (req, res) {
     Car.find().then(function (allCarsData) {
@@ -148,5 +174,6 @@ app.get('/getCars', function (req, res) {
         console.log(error);
     })
 })
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.listen(6969);

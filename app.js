@@ -76,6 +76,7 @@ app.post('/login', async function (req, res) {
         res.json({
             message: "Invalid! Login Denied!!"
         })
+        console.log("Invalid username or password.");
     }
 
 })
